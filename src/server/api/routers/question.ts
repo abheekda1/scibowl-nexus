@@ -12,6 +12,10 @@ export const questionRouter = createTRPCRouter({
         return ctx.prisma.question.findMany();
     }),
 
+    getMine: protectedProcedure.query(({ ctx }) => {
+        return ctx.prisma.user.findUnique({ where: { id: ctx.session.user.id }}).questions();
+    }),
+
     create: protectedProcedure
     .input(z.object({ tossUp: z.string() }))
     .mutation(async ({ ctx, input }) => {
