@@ -1,37 +1,36 @@
-import { contextProps } from "@trpc/react-query/shared";
 import { z } from "zod";
 
 import {
-    createTRPCRouter,
-    publicProcedure,
-    protectedProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 
 export const questionRouter = createTRPCRouter({
-    getAll: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.question.findMany();
-    }),
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.question.findMany();
+  }),
 
-    getMine: protectedProcedure.query(({ ctx }) => {
-        return ctx.prisma.user.findUnique({ where: { id: ctx.session.user.id }}).questions();
-    }),
+  getMine: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.user
+      .findUnique({ where: { id: ctx.session.user.id } })
+      .questions();
+  }),
 
-    create: protectedProcedure
+  create: protectedProcedure
     .input(z.object({ tossUp: z.string() }))
     .mutation(async ({ ctx, input }) => {
-        const prismaUser = await ctx.prisma.user.findUnique({
-            where: { email: ctx.session.user.email! },
-        })
-        
-        if (!prismaUser) return { error: 'Unauthorized' };
+      const prismaUser = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
+      });
 
-        const ret = await ctx.prisma.question.create({
-            data: {
-                tossUp: input.tossUp,
-                userId: prismaUser.id,
-            }
-        });
+      if (!prismaUser) return { error: "Unauthorized" };
 
-        return ret;
+      return ctx.prisma.question.create({
+        data: {
+          tossUp: input.tossUp,
+          userId: prismaUser.id,
+        },
+      });
     }),
 });
