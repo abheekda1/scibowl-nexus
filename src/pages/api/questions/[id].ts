@@ -8,8 +8,9 @@ export default async function handler(
   // Create context and caller
   const ctx = await createTRPCContext({ req, res });
   const { id } = req.query;
+  if (!id) return res.send(null);
   const question = await ctx.prisma.question.findUnique({
-    where: { id: +id! },
+    where: { id: +id },
   });
   res.status(200).json(question);
 }

@@ -8,8 +8,9 @@ export default async function handler(
   // Create context and caller
   const ctx = await createTRPCContext({ req, res });
   const { id } = req.query;
+  if (!id) return res.send(null);
   const round = await ctx.prisma.round.findUnique({
-    where: { id: +id! },
+    where: { id: +id },
   });
   res.status(200).json(round);
 }

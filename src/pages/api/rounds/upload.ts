@@ -1,10 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { type Prisma } from "@prisma/client";
 import axios from "axios";
 import FormData from "form-data";
 import multiparty from "multiparty";
-import { NextApiRequest, NextApiResponse } from "next";
+import { type NextApiRequest, type NextApiResponse } from "next";
 import fs from "node:fs";
 import { env } from "~/env.mjs";
 import { createTRPCContext } from "~/server/api/trpc";
+
+/*type QuestionCreateData = {
+    question: {
+        create: {
+            category: string,
+            tossUpFormat: string,
+            tossUpQuestion: string,
+            tossUpAnswer: string,
+            bonusFormat: string,
+            bonusQuestion: string,
+            bonusAnswer: string,
+            source: string,
+            userId: string | undefined,
+        }
+    }
+};*/
+
+type QuestionCreateData = Prisma.QuestionsInRoundsCreateWithoutRoundInput;
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,19 +35,20 @@ export default async function handler(
   if (req.method != "POST") return res.status(405).send("Only POST requests.");
 
   const { prisma, session } = await createTRPCContext({ req, res });
+  if (!session) return res.status(401).send("Unauthorized");
+
   const parserPath = env.PARSER_PATH;
 
   const form = new multiparty.Form();
   const fData = new FormData();
   // https://stackoverflow.com/questions/62411430/post-multipart-form-data-to-serverless-next-js-api-running-on-vercel-now-sh
-  const body: any = await new Promise((resolve, reject) => {
+  const body: {fields: any, files: any} = await new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) reject({ err });
       resolve({ fields, files });
     });
   });
 
-  // @ts-ignore
   fData.append("file", fs.createReadStream(body.files.file[0].path), "file");
 
   const axiosRes = await axios.post(parserPath, fData, {
@@ -35,10 +58,10 @@ export default async function handler(
   const round = axiosRes.data;
   if (!round) return res.status(500).send("Failed to upload file.");
 
-  const questionCreateDatas = [];
+  const questionCreateDatas = Array<QuestionCreateData>();
 
   for (let i = 0; i < round.length; i++) {
-    const questionCreateData = {
+    const questionCreateData : QuestionCreateData = {
       question: {
           create: {
             category: round[i].category,
@@ -49,7 +72,7 @@ export default async function handler(
             bonusQuestion: round[i].bonusQuestion,
             bonusAnswer: round[i].bonusAnswer,
             source: body.fields.source[0] || "",
-            userId: session?.user.id!,
+            userId: session?.user.id,
           },
       },
     };
@@ -60,7 +83,7 @@ export default async function handler(
 
   await prisma.round.create({
     data: {
-        userId: session?.user.id!,
+        userId: session?.user.id,
         source: body.fields.source[0] || "",
         questions: {
             create: questionCreateDatas,
