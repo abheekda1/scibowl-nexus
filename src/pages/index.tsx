@@ -56,7 +56,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const AddQuestion: React.FC = () => {
+/*const AddQuestion: React.FC = () => {
   const [value, setValue] = useState("");
   const mutation = api.questions.create.useMutation();
 
@@ -79,7 +79,7 @@ const AddQuestion: React.FC = () => {
       ></input>
     </form>
   );
-};
+};*/
 
 const UploadRound: React.FC = () => {
   const { data: sessionData } = useSession();
