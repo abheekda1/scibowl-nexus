@@ -7,7 +7,6 @@ import { api } from "~/utils/api";
 import React, { useState } from "react";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const questions = api.questions.getAll.useQuery();
   const rounds = api.rounds.getAll.useQuery();
   const myQuestions = api.questions.getMine.useQuery();
@@ -22,59 +21,32 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <div className="flex flex-col items-center gap-2">
-            <pre className="text-sm text-white overflow-x-auto break-word">
-              {questions.data
-                ? JSON.stringify(
-                    { all: questions.data, mine: myQuestions.data },
-                    null,
-                    2
-                  )
-                : "Loading questions query..."}
+          <div className="flex flex-col items-center gap-2 text-white">
+            ROUNDS:
+            <div className="container h-24 w-64 items-center justify-center overflow-scroll border">
+              <pre className="break-word overflow-x-auto text-sm text-white">
+                {questions.data
+                  ? JSON.stringify(
+                      { all: questions.data, mine: myQuestions.data },
+                      null,
+                      2
+                    )
+                  : "Loading questions query..."}
 
-              {rounds.data
-                ? JSON.stringify(
-                    { all: rounds.data, mine: myRounds.data },
-                    null,
-                    2
-                  )
-                : "Loading questions query..."}
-            </pre>
-            <AddQuestion />
+                {rounds.data
+                  ? JSON.stringify(
+                      { all: rounds.data, mine: myRounds.data },
+                      null,
+                      2
+                    )
+                  : "Loading questions query..."}
+              </pre>
+            </div>
+            {/* <AddQuestion /> */}
             <UploadRound />
           </div>
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
-            <AuthShowcase />
+            <SignInButton />
           </div>
         </div>
       </main>
@@ -139,7 +111,7 @@ const UploadRound: React.FC = () => {
   );
 };
 
-const AuthShowcase: React.FC = () => {
+const SignInButton: React.FC = () => {
   const { data: sessionData } = useSession();
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
@@ -151,7 +123,7 @@ const AuthShowcase: React.FC = () => {
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
+        {/*secretMessage && <span> - {secretMessage}</span>*/}
       </p>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
@@ -159,6 +131,40 @@ const AuthShowcase: React.FC = () => {
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
+    </div>
+  );
+};
+
+const T3AppDefault: React.FC = () => {
+  return (
+    <div>
+      <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+        Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
+      </h1>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+        <Link
+          className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+          href="https://create.t3.gg/en/usage/first-steps"
+          target="_blank"
+        >
+          <h3 className="text-2xl font-bold">First Steps →</h3>
+          <div className="text-lg">
+            Just the basics - Everything you need to know to set up your
+            database and authentication.
+          </div>
+        </Link>
+        <Link
+          className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+          href="https://create.t3.gg/en/introduction"
+          target="_blank"
+        >
+          <h3 className="text-2xl font-bold">Documentation →</h3>
+          <div className="text-lg">
+            Learn more about Create T3 App, the libraries it uses, and how to
+            deploy it.
+          </div>
+        </Link>
+      </div>
     </div>
   );
 };
