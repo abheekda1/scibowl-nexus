@@ -10,7 +10,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method != "POST") return res.status(405);
+  if (req.method != "POST") return res.status(405).send("Only POST requests.");
 
   const { prisma, session } = await createTRPCContext({ req, res });
   const parserPath = env.PARSER_PATH;
@@ -31,7 +31,9 @@ export default async function handler(
   const axiosRes = await axios.post(parserPath, fData, {
     headers: { "Accept-Encoding": "gzip,deflate,compress" },
   });
+
   const round = axiosRes.data;
+  if (!round) return res.status(500).send("Failed to upload file.");
 
   const questionCreateDatas = [];
 
