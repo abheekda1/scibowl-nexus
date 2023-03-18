@@ -56,13 +56,33 @@ model User {
   accounts      Account[]
   sessions      Session[]
   questions     Question[]
+  rounds        Round[]
+}
+
+model Round {
+  id        Int                 @id @default(autoincrement())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions QuestionsInRounds[]
 }
 
 model Question {
-  id     Int    @id @default(autoincrement())
+  id     Int                 @id @default(autoincrement())
   tossUp String
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rounds QuestionsInRounds[]
+}
+
+model QuestionsInRounds {
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int // relation scalar field (used in the `@relation` attribute above)
+  round      Round    @relation(fields: [roundId], references: [id])
+  roundId    Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([questionId, roundId])
 }
 
 model VerificationToken {
