@@ -18,7 +18,18 @@ export const questionRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure
-    .input(z.object({ tossUp: z.string() }))
+    .input(
+      z.object({
+        category: z.string(),
+        tossUpFormat: z.string(),
+        tossUpQuestion: z.string(),
+        tossUpAnswer: z.string(),
+        bonusFormat: z.string(),
+        bonusQuestion: z.string(),
+        bonusAnswer: z.string(),
+        source: z.string(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const prismaUser = await ctx.prisma.user.findUnique({
         where: { id: ctx.session.user.id },
@@ -28,7 +39,14 @@ export const questionRouter = createTRPCRouter({
 
       return ctx.prisma.question.create({
         data: {
-          tossUp: input.tossUp,
+          category: input.category,
+          tossUpFormat: input.tossUpFormat,
+          tossUpQuestion: input.tossUpQuestion,
+          tossUpAnswer: input.tossUpAnswer,
+          bonusFormat: input.bonusFormat,
+          bonusQuestion: input.bonusQuestion,
+          bonusAnswer: input.bonusAnswer,
+          source: input.source,
           userId: prismaUser.id,
         },
       });
