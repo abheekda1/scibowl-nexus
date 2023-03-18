@@ -9,7 +9,9 @@ import React, { useState } from "react";
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const questions = api.questions.getAll.useQuery();
+  const rounds = api.rounds.getAll.useQuery();
   const myQuestions = api.questions.getMine.useQuery();
+  const myRounds = api.rounds.getMine.useQuery();
 
   return (
     <>
@@ -29,8 +31,17 @@ const Home: NextPage = () => {
                     2
                   )
                 : "Loading questions query..."}
+
+              {rounds.data
+                ? JSON.stringify(
+                    { all: rounds.data, mine: myRounds.data },
+                    null,
+                    2
+                  )
+                : "Loading questions query..."}
             </pre>
             <AddQuestion />
+            <UploadRound />
           </div>
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
@@ -95,6 +106,36 @@ const AddQuestion: React.FC = () => {
         }}
       ></input>
     </form>
+  );
+};
+
+const UploadRound: React.FC = () => {
+  const { data: sessionData } = useSession();
+
+  return (
+    <div className={"flex justify-center"}>
+      {sessionData && (
+        <form
+          action="/api/rounds/upload"
+          method="post"
+          encType="multipart/form-data"
+        >
+          <input id="file" name="file" type="file" />
+          <input
+            className={"rounded p-1"}
+            id="source"
+            type="text"
+            name="source"
+            placeholder="source"
+          />{" "}
+          <input
+            className={"rounded bg-slate-600 py-0.5 px-1"}
+            type="submit"
+            value={"Submit"}
+          />
+        </form>
+      )}
+    </div>
   );
 };
 
