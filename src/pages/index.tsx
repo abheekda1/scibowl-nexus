@@ -22,7 +22,7 @@ const Home: NextPage = () => {
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <div className="flex flex-col items-center gap-2 text-white">
           <Link href="/api/questions">QUESTIONS:</Link>
-            <div className="container h-24 w-64 items-center justify-center overflow-scroll border">
+            <div className="container h-24 w-96 items-center justify-center overflow-scroll border">
               <pre className="break-word overflow-x-auto text-sm text-white">
               {questions.data
                   ? JSON.stringify(
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
               </pre>
             </div>
             <Link href="/api/rounds">ROUNDS:</Link>
-            <div className="container h-24 w-64 items-center justify-center overflow-scroll border">
+            <div className="container h-24 w-96 items-center justify-center overflow-scroll border">
               <pre className="break-word overflow-x-auto text-sm text-white">
                 {rounds.data
                   ? JSON.stringify(
