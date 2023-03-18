@@ -4,7 +4,6 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
-import React, { useState } from "react";
 
 const Home: NextPage = () => {
   const questions = api.questions.getAll.useQuery();
@@ -22,24 +21,28 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <div className="flex flex-col items-center gap-2 text-white">
-            ROUNDS:
+          <Link href="/api/questions">QUESTIONS:</Link>
             <div className="container h-24 w-64 items-center justify-center overflow-scroll border">
               <pre className="break-word overflow-x-auto text-sm text-white">
-                {questions.data
+              {questions.data
                   ? JSON.stringify(
                       { all: questions.data, mine: myQuestions.data },
                       null,
                       2
                     )
-                  : "Loading questions query..."}
-
+                  : "Loading questions..."}
+              </pre>
+            </div>
+            <Link href="/api/rounds">ROUNDS:</Link>
+            <div className="container h-24 w-64 items-center justify-center overflow-scroll border">
+              <pre className="break-word overflow-x-auto text-sm text-white">
                 {rounds.data
                   ? JSON.stringify(
                       { all: rounds.data, mine: myRounds.data },
                       null,
                       2
                     )
-                  : "Loading questions query..."}
+                  : "Loading rounds..."}
               </pre>
             </div>
             {/* <AddQuestion /> */}
