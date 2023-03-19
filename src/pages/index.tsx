@@ -110,15 +110,14 @@ const AddQuestion: React.FC = () => {
       <h1 className="font-extrabold text-3xl mb-4">Submit Question:</h1>
       {
         Object.keys(questionInfo).map((key, idx) => {
-            return <>{key}: <input className="text-black mt-2 mb-4" type="text" name={key} key={idx} onChange={handleChange}></input></>
+            return <>{key}: <input className="text-black mt-2 mb-4" type="text" name={key} key={idx} onChange={handleChange} required></input></>
         })
       }
       <input
         type="submit"
         value="Submit"
-        className="text-black"
         onClick={e => {
-          e.preventDefault(); 
+          // e.preventDefault(); 
           mutation.mutate(questionInfo);
         }}
       ></input>
