@@ -5,6 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useState, type SyntheticEvent } from "react";
 
 import { api } from "~/utils/api";
+import Navbar from "~/components/navbar";
 
 const Home: NextPage = () => {
   const questions = api.questions.getAll.useQuery();
@@ -19,11 +20,12 @@ const Home: NextPage = () => {
         <meta name="description" content="omg" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Navbar active="home"/>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <div className="flex flex-col items-center gap-2">
+          {/* <div className="flex flex-col items-center gap-2">
             <SignInButton />
-          </div>
+          </div> */}
           <div className="flex flex-col items-center gap-2 text-white">
           <Link href="/api/questions">QUESTIONS:</Link>
             <div className="container h-24 w-96 items-center justify-center overflow-scroll border">
@@ -190,7 +192,7 @@ const T3AppDefault: React.FC = () => {
           className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
           href="https://create.t3.gg/en/usage/first-steps"
           target="_blank"
-        >
+          legacyBehavior>
           <h3 className="text-2xl font-bold">First Steps →</h3>
           <div className="text-lg">
             Just the basics - Everything you need to know to set up your
@@ -201,7 +203,7 @@ const T3AppDefault: React.FC = () => {
           className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
           href="https://create.t3.gg/en/introduction"
           target="_blank"
-        >
+          legacyBehavior>
           <h3 className="text-2xl font-bold">Documentation →</h3>
           <div className="text-lg">
             Learn more about Create T3 App, the libraries it uses, and how to
